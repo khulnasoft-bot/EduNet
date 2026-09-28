@@ -1,0 +1,23 @@
+# TODO — 14 Devops Observability Performance
+
+- [ ] Docker
+- [ ] CI
+- [ ] CD
+- [ ] IaC
+- [ ] staging
+- [ ] production
+- [ ] rollback
+- [ ] canary
+- [ ] blue/green
+- [ ] logs
+- [ ] metrics
+- [ ] traces
+- [ ] uptime
+- [ ] alerts
+- [ ] SLI
+- [ ] SLO
+- [ ] SLA
+- [ ] load test
+- [ ] stress test
+- [ ] spike test
+- [ ] capacity test

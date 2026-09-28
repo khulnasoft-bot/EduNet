@@ -1,0 +1,22 @@
+# TODO — 15 Qa Dr Support
+
+- [ ] unit testing
+- [ ] integration testing
+- [ ] E2E
+- [ ] regression
+- [ ] accessibility
+- [ ] security testing
+- [ ] offline testing
+- [ ] low-bandwidth testing
+- [ ] browser testing
+- [ ] mobile testing
+- [ ] migration testing
+- [ ] backup
+- [ ] restore
+- [ ] RPO
+- [ ] RTO
+- [ ] DR drill
+- [ ] help center
+- [ ] ticketing
+- [ ] SLA
+- [ ] escalation

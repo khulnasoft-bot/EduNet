@@ -1,0 +1,22 @@
+# TODO — 13 Security Privacy
+
+- [ ] threat model
+- [ ] TLS
+- [ ] encryption at rest
+- [ ] secrets
+- [ ] RBAC
+- [ ] MFA
+- [ ] API authorization
+- [ ] rate limiting
+- [ ] WAF
+- [ ] DDoS
+- [ ] SAST
+- [ ] DAST
+- [ ] dependency scanning
+- [ ] penetration testing
+- [ ] privacy
+- [ ] consent
+- [ ] child privacy
+- [ ] retention
+- [ ] deletion
+- [ ] export

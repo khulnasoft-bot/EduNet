@@ -1,0 +1,24 @@
+{
+  "name": "@edunet/auth",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./src/index.ts",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc",
+    "lint": "eslint . --ext .ts,.tsx",
+    "typecheck": "tsc --noEmit",
+    "test": "jest",
+    "clean": "rm -rf dist node_modules"
+  },
+  "dependencies": {
+    "@edunet/types": "workspace:*",
+    "@edunet/config": "workspace:*",
+    "react": "^18.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/react": "^18.3.0",
+    "typescript": "^5.5.0"
+  }
+}

@@ -1,0 +1,24 @@
+# TODO — 10 Search Analytics Ai
+
+- [ ] global search
+- [ ] Bengali search
+- [ ] fuzzy search
+- [ ] filters
+- [ ] ranking
+- [ ] event tracking
+- [ ] learning analytics
+- [ ] attendance analytics
+- [ ] retention
+- [ ] skill gaps
+- [ ] dashboards
+- [ ] data lake
+- [ ] warehouse
+- [ ] ETL
+- [ ] AI gateway
+- [ ] recommendations
+- [ ] personalized learning
+- [ ] question generation
+- [ ] summarization
+- [ ] translation
+- [ ] AI safety
+- [ ] human review

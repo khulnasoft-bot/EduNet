@@ -1,0 +1,4 @@
+# Skill: Product Engineering
+For every feature:
+INPUT -> USER ACTION -> BUSINESS RULE -> VALIDATION -> AUTHORIZATION ->
+DATABASE -> API -> EVENT -> UI -> NOTIFICATION -> ANALYTICS -> TEST.

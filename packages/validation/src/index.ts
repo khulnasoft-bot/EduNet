@@ -1,0 +1,94 @@
+import { z } from 'zod';
+
+// User validation schemas
+export const userSchema = z.object({
+  email: z.string().email(),
+  phoneNumber: z.string().optional(),
+  firstName: z.string().min(1).max(100),
+  lastName: z.string().min(1).max(100),
+  role: z.enum(['student', 'teacher', 'parent', 'admin', 'tutor']),
+  organizationId: z.string().uuid(),
+  avatarUrl: z.string().url().optional(),
+});
+
+export const loginSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+});
+
+export const registerSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8).max(128),
+  firstName: z.string().min(1).max(100),
+  lastName: z.string().min(1).max(100),
+  role: z.enum(['student', 'teacher', 'parent', 'tutor']),
+  organizationCode: z.string().min(1),
+});
+
+// Organization validation schemas
+export const organizationSchema = z.object({
+  name: z.string().min(1).max(200),
+  type: z.enum(['school', 'district', 'university', 'training_center']),
+  code: z.string().min(1).max(50),
+  address: z.string().optional(),
+});
+
+// Course validation schemas
+export const courseSchema = z.object({
+  organizationId: z.string().uuid(),
+  title: z.string().min(1).max(200),
+  description: z.string().min(1).max(5000),
+  subject: z.string().min(1).max(100),
+  grade: z.string().optional(),
+  teacherId: z.string().uuid(),
+});
+
+// Assignment validation schemas
+export const assignmentSchema = z.object({
+  courseId: z.string().uuid(),
+  title: z.string().min(1).max(200),
+  description: z.string().min(1).max(5000),
+  dueDate: z.string().datetime(),
+  maxPoints: z.number().min(0),
+});
+
+export const submissionSchema = z.object({
+  assignmentId: z.string().uuid(),
+  content: z.string().min(1).max(10000),
+});
+
+// Assessment validation schemas
+export const assessmentSchema = z.object({
+  courseId: z.string().uuid(),
+  title: z.string().min(1).max(200),
+  type: z.enum(['quiz', 'exam', 'survey']),
+  questions: z.array(
+    z.object({
+      type: z.enum(['multiple_choice', 'true_false', 'short_answer', 'essay']),
+      text: z.string().min(1).max(1000),
+      options: z.array(z.string()).optional(),
+      correctAnswer: z.string().optional(),
+      points: z.number().min(0),
+    })
+  ),
+  timeLimit: z.number().optional(),
+  attemptsAllowed: z.number().min(1),
+});
+
+// Tutoring validation schemas
+export const tutoringSessionSchema = z.object({
+  tutorId: z.string().uuid(),
+  studentId: z.string().uuid(),
+  subject: z.string().min(1).max(100),
+  scheduledAt: z.string().datetime(),
+  duration: z.number().min(15).max(180),
+});
+
+// Booking validation schemas
+export const bookingSchema = z.object({
+  type: z.enum(['workshop', 'club', 'event']),
+  title: z.string().min(1).max(200),
+  description: z.string().min(1).max(5000),
+  scheduledAt: z.string().datetime(),
+  capacity: z.number().min(1),
+});

@@ -1,0 +1,215 @@
+import { pgTable, serial, text, timestamp, boolean, uuid, varchar, index, unique } from 'drizzle-orm/pg-core';
+import { relations } from 'drizzle-orm';
+
+// Organizations
+export const organizations = pgTable('organizations', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  name: varchar('name', { length: 200 }).notNull(),
+  type: varchar('type', { length: 50 }).notNull(), // school, district, university, training_center
+  code: varchar('code', { length: 50 }).notNull().unique(),
+  address: text('address'),
+  isActive: boolean('is_active').default(true).notNull(),
+  deletedAt: timestamp('deleted_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  codeIdx: unique('organizations_code_unique').on(table.code),
+  typeIdx: index('organizations_type_idx').on(table.type),
+  isActiveIdx: index('organizations_is_active_idx').on(table.isActive),
+}));
+
+// Users
+export const users = pgTable('users', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  email: varchar('email', { length: 255 }).notNull().unique(),
+  phoneNumber: varchar('phone_number', { length: 20 }),
+  passwordHash: varchar('password_hash', { length: 255 }).notNull(),
+  firstName: varchar('first_name', { length: 100 }).notNull(),
+  lastName: varchar('last_name', { length: 100 }).notNull(),
+  role: varchar('role', { length: 20 }).notNull(), // student, teacher, parent, admin, tutor
+  organizationId: uuid('organization_id').references(() => organizations.id, { onDelete: 'restrict' }).notNull(),
+  avatarUrl: text('avatar_url'),
+  isVerified: boolean('is_verified').default(false).notNull(),
+  deletedAt: timestamp('deleted_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  emailIdx: unique('users_email_unique').on(table.email),
+  organizationIdx: index('users_organization_id_idx').on(table.organizationId),
+  roleIdx: index('users_role_idx').on(table.role),
+  isActiveIdx: index('users_is_verified_idx').on(table.isVerified),
+}));
+
+// Courses
+export const courses = pgTable('courses', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  organizationId: uuid('organization_id').references(() => organizations.id, { onDelete: 'restrict' }).notNull(),
+  title: varchar('title', { length: 200 }).notNull(),
+  description: text('description').notNull(),
+  subject: varchar('subject', { length: 100 }).notNull(),
+  grade: varchar('grade', { length: 20 }),
+  teacherId: uuid('teacher_id').references(() => users.id, { onDelete: 'restrict' }).notNull(),
+  isActive: boolean('is_active').default(true).notNull(),
+  deletedAt: timestamp('deleted_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  organizationIdx: index('courses_organization_id_idx').on(table.organizationId),
+  teacherIdx: index('courses_teacher_id_idx').on(table.teacherId),
+  subjectIdx: index('courses_subject_idx').on(table.subject),
+  isActiveIdx: index('courses_is_active_idx').on(table.isActive),
+}));
+
+// Parent-Child Relationships
+export const parentChildRelationships = pgTable('parent_child_relationships', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  parentId: uuid('parent_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  childId: uuid('child_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  relationship: varchar('relationship', { length: 50 }).notNull(), // father, mother, guardian, etc.
+  isPrimary: boolean('is_primary').default(false).notNull(),
+  canViewGrades: boolean('can_view_grades').default(true).notNull(),
+  canViewAttendance: boolean('can_view_attendance').default(true).notNull(),
+  canViewAssignments: boolean('can_view_assignments').default(true).notNull(),
+  deletedAt: timestamp('deleted_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  parentChildIdx: unique('parent_child_relationships_parent_child_unique').on(table.parentId, table.childId),
+  parentIdx: index('parent_child_relationships_parent_id_idx').on(table.parentId),
+  childIdx: index('parent_child_relationships_child_id_idx').on(table.childId),
+}));
+
+// Enrollments
+export const enrollments = pgTable('enrollments', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  studentId: uuid('student_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  courseId: uuid('course_id').references(() => courses.id, { onDelete: 'cascade' }).notNull(),
+  enrolledAt: timestamp('enrolled_at').defaultNow().notNull(),
+  status: varchar('status', { length: 20 }).notNull(), // active, completed, dropped
+  deletedAt: timestamp('deleted_at'),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  studentCourseIdx: unique('enrollments_student_course_unique').on(table.studentId, table.courseId),
+  studentIdx: index('enrollments_student_id_idx').on(table.studentId),
+  courseIdx: index('enrollments_course_id_idx').on(table.courseId),
+  statusIdx: index('enrollments_status_idx').on(table.status),
+}));
+
+// Assignments
+export const assignments = pgTable('assignments', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  courseId: uuid('course_id').references(() => courses.id, { onDelete: 'cascade' }).notNull(),
+  title: varchar('title', { length: 200 }).notNull(),
+  description: text('description').notNull(),
+  dueDate: timestamp('due_date').notNull(),
+  maxPoints: serial('max_points').notNull(),
+  isActive: boolean('is_active').default(true).notNull(),
+  deletedAt: timestamp('deleted_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  courseIdx: index('assignments_course_id_idx').on(table.courseId),
+  dueDateIdx: index('assignments_due_date_idx').on(table.dueDate),
+  isActiveIdx: index('assignments_is_active_idx').on(table.isActive),
+}));
+
+// Submissions
+export const submissions = pgTable('submissions', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  assignmentId: uuid('assignment_id').references(() => assignments.id, { onDelete: 'cascade' }).notNull(),
+  studentId: uuid('student_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  content: text('content').notNull(),
+  submittedAt: timestamp('submitted_at').defaultNow().notNull(),
+  grade: serial('grade'),
+  gradedAt: timestamp('graded_at'),
+  gradedBy: uuid('graded_by').references(() => users.id, { onDelete: 'set null' }),
+  deletedAt: timestamp('deleted_at'),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  assignmentStudentIdx: unique('submissions_assignment_student_unique').on(table.assignmentId, table.studentId),
+  assignmentIdx: index('submissions_assignment_id_idx').on(table.assignmentId),
+  studentIdx: index('submissions_student_id_idx').on(table.studentId),
+  gradedByIdx: index('submissions_graded_by_idx').on(table.gradedBy),
+}));
+
+// Relations
+export const organizationsRelations = relations(organizations, ({ many }) => ({
+  users: many(users),
+  courses: many(courses),
+}));
+
+export const usersRelations = relations(users, ({ one, many }) => ({
+  organization: one(organizations, {
+    fields: [users.organizationId],
+    references: [organizations.id],
+  }),
+  courses: many(courses),
+  enrollments: many(enrollments),
+  submissions: many(submissions),
+  parentRelationships: many(parentChildRelationships, {
+    relationName: 'parentRelationships',
+  }),
+  childRelationships: many(parentChildRelationships, {
+    relationName: 'childRelationships',
+  }),
+}));
+
+export const parentChildRelationshipsRelations = relations(parentChildRelationships, ({ one }) => ({
+  parent: one(users, {
+    fields: [parentChildRelationships.parentId],
+    references: [users.id],
+    relationName: 'parentRelationships',
+  }),
+  child: one(users, {
+    fields: [parentChildRelationships.childId],
+    references: [users.id],
+    relationName: 'childRelationships',
+  }),
+}));
+
+export const coursesRelations = relations(courses, ({ one, many }) => ({
+  organization: one(organizations, {
+    fields: [courses.organizationId],
+    references: [organizations.id],
+  }),
+  teacher: one(users, {
+    fields: [courses.teacherId],
+    references: [users.id],
+  }),
+  enrollments: many(enrollments),
+  assignments: many(assignments),
+}));
+
+export const enrollmentsRelations = relations(enrollments, ({ one }) => ({
+  student: one(users, {
+    fields: [enrollments.studentId],
+    references: [users.id],
+  }),
+  course: one(courses, {
+    fields: [enrollments.courseId],
+    references: [courses.id],
+  }),
+}));
+
+export const assignmentsRelations = relations(assignments, ({ one, many }) => ({
+  course: one(courses, {
+    fields: [assignments.courseId],
+    references: [courses.id],
+  }),
+  submissions: many(submissions),
+}));
+
+export const submissionsRelations = relations(submissions, ({ one }) => ({
+  assignment: one(assignments, {
+    fields: [submissions.assignmentId],
+    references: [assignments.id],
+  }),
+  student: one(users, {
+    fields: [submissions.studentId],
+    references: [users.id],
+  }),
+  gradedBy: one(users, {
+    fields: [submissions.gradedBy],
+    references: [users.id],
+  }),
+}));
