@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import {
   createParentChildRelationshipHandler,
   getParentChildRelationshipHandler,
@@ -29,12 +29,12 @@ function authenticate(req: AuthRequest, res: any, next: any) {
 
     const token = authHeader.substring(7);
     const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
-    const payload = jwt.verify(token, JWT_SECRET);
+    const payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
     
     req.user = {
-      id: payload.userId,
-      role: payload.role,
-      organizationId: payload.organizationId,
+      id: payload.userId as string,
+      role: payload.role as string,
+      organizationId: payload.organizationId as string,
     };
     
     next();

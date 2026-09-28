@@ -1,5 +1,5 @@
-import { drizzle } from 'drizzle-orm/postgres';
-import { assignments, submissions } from '@edunet/database/schema';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import { assignments, submissions } from '@edunet/database';
 import { eq } from 'drizzle-orm';
 import postgres from 'postgres';
 

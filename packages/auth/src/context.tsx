@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-interface User {
+export interface User {
   id: string;
   email: string;
   firstName: string;
@@ -13,7 +13,7 @@ interface User {
   isVerified: boolean;
 }
 
-interface AuthContextType {
+export interface AuthContextType {
   user: User | null;
   token: string | null;
   isLoading: boolean;
@@ -22,7 +22,7 @@ interface AuthContextType {
   logout: () => void;
 }
 
-interface RegisterData {
+export interface RegisterData {
   email: string;
   password: string;
   firstName: string;

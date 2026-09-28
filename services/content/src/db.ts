@@ -48,8 +48,7 @@ export async function findLessonProgressById(id: string) {
 export async function findLessonProgress(lessonId: string, studentId: string) {
   const result = await db.select()
     .from(schema.lessonProgress)
-    .where(eq(schema.lessonProgress.lessonId, lessonId))
-    .where(eq(schema.lessonProgress.studentId, studentId))
+    .where(and(eq(schema.lessonProgress.lessonId, lessonId), eq(schema.lessonProgress.studentId, studentId)))
     .limit(1);
   return result[0] || null;
 }
@@ -122,4 +121,4 @@ export async function deleteResource(id: string) {
   return result[0];
 }
 
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';

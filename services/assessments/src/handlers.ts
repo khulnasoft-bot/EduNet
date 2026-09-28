@@ -225,6 +225,7 @@ export async function createQuizAttemptHandler(req: AuthRequest, res: Response) 
       studentId,
       answers: req.body.answers,
       feedback: req.body.feedback,
+      passed: 'false',
     });
     
     res.status(201).json(attempt);

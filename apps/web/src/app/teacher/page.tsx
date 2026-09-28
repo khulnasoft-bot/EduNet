@@ -113,7 +113,7 @@ export default function TeacherDashboard() {
 
         {courses.length === 0 ? (
           <div className="text-center py-12 border rounded-lg">
-            <p className="text-gray-600 mb-4">You haven't created any courses yet</p>
+            <p className="text-gray-600 mb-4">You haven&apos;t created any courses yet</p>
             <Link href="/teacher/courses/new">
               <Button variant="primary">Create Your First Course</Button>
             </Link>

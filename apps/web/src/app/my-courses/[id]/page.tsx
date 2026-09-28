@@ -39,6 +39,7 @@ export default function MyCourseDetailPage() {
   const [course, setCourse] = useState<Course | null>(null);
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
+  const [enrollment, setEnrollment] = useState<{status: string} | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -90,6 +91,22 @@ export default function MyCourseDetailPage() {
           const submissionsData = await submissionsResponse.json();
           setSubmissions(submissionsData);
         }
+
+        const enrollmentResponse = await fetch(
+          `http://localhost:3001/api/enrollments?courseId=${courseId}&studentId=${user.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (enrollmentResponse.ok) {
+          const enrollmentData = await enrollmentResponse.json();
+          if (Array.isArray(enrollmentData) && enrollmentData.length > 0) {
+            setEnrollment(enrollmentData[0]);
+          }
+        }
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -103,6 +120,8 @@ export default function MyCourseDetailPage() {
   const getSubmissionForAssignment = (assignmentId: string) => {
     return submissions.find(s => s.assignmentId === assignmentId);
   };
+
+  const isEnrolled = enrollment !== null;
 
   if (!user) {
     return (

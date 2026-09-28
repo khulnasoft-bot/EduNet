@@ -21,15 +21,6 @@ export interface AuthRequest extends Request {
 export async function createCourseHandler(req: AuthRequest, res: Response) {
   try {
     const data = courseSchema.parse(req.body);
-    
-    const user = await findUserById(req.user?.id || '');
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    if (req.user?.role !== 'admin' && data.organizationId !== user.organizationId) {
-      return res.status(403).json({ error: 'You can only create courses in your own organization' });
-    }
 
     const course = await createCourse(data);
     res.status(201).json(course);

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import {
   createLessonHandler,
   getLessonHandler,
@@ -36,7 +36,7 @@ function authenticate(req: AuthRequest, res: any, next: any) {
 
     const token = authHeader.substring(7);
     const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
-    const payload = jwt.verify(token, JWT_SECRET);
+    const payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
     
     req.user = {
       id: payload.userId,

@@ -1,5 +1,5 @@
-import { drizzle } from 'drizzle-orm/postgres';
-import { users } from '@edunet/database/schema';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import { users } from '@edunet/database';
 import { eq } from 'drizzle-orm';
 import postgres from 'postgres';
 import bcrypt from 'bcryptjs';
